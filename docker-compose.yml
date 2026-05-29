@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ordexxa-postgres
+    environment:
+      POSTGRES_DB: ordexxa_db
+      POSTGRES_USER: ordexxa_user
+      POSTGRES_PASSWORD: ordexxa_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ordexxa_postgres_data:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: ordexxa-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  backend:
+    build:
+      context: ../ordexxa-backend
+      dockerfile: Dockerfile
+    container_name: ordexxa-backend
+    depends_on:
+      - postgres
+      - mailpit
+    environment:
+      SERVER_PORT: 8081
+      DB_URL: jdbc:postgresql://postgres:5432/ordexxa_db
+      DB_USERNAME: ordexxa_user
+      DB_PASSWORD: ordexxa_password
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_USERNAME:
+      MAIL_PASSWORD:
+      MAIL_SMTP_AUTH: false
+      MAIL_SMTP_STARTTLS: false
+      MAIL_SMTP_STARTTLS_REQUIRED: false
+      MAIL_SMTP_SSL_TRUST: "*"
+      MAIL_FROM: no-reply@ordexxa.local
+      AUTH_CODE_EXPIRATION_MINUTES: 15
+    ports:
+      - "8081:8081"
+
+  api-gateway:
+    build:
+      context: ../ordexxa-api-gateway
+      dockerfile: Dockerfile
+    container_name: ordexxa-api-gateway
+    depends_on:
+      - backend
+    environment:
+      GATEWAY_PORT: 8080
+      BACKEND_BASE_URL: http://backend:8081
+      FRONTEND_DEV_URL: http://localhost:5173
+      FRONTEND_PREVIEW_URL: http://localhost:4173
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ../ordexxa-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8080
+    container_name: ordexxa-frontend
+    depends_on:
+      - api-gateway
+    ports:
+      - "4173:80"
+
+volumes:
+  ordexxa_postgres_data:
