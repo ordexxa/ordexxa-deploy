@@ -8,7 +8,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - ordexxa-otel-collector.onrender.com
+          - rdexxa-otel-collector.onrender.com
         labels:
           project: ordexxa
           environment: production
