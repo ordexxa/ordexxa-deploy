@@ -1,0 +1,9 @@
+apiVersion: 1
+
+datasources:
+  - name: Ordexxa Prometheus
+    type: prometheus
+    access: proxy
+    url: https://ordexxa-prometheus.onrender.com
+    isDefault: true
+    editable: true

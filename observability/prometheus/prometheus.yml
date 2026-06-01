@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: ordexxa-otel-collector
+    scheme: https
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - ordexxa-otel-collector.onrender.com
+        labels:
+          project: ordexxa
+          environment: production
+
+  - job_name: prometheus-self
+    static_configs:
+      - targets:
+          - localhost:9090
+        labels:
+          project: ordexxa
+          environment: production

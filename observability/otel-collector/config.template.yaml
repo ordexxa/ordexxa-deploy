@@ -1,0 +1,42 @@
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: ordexxa-backend
+          scrape_interval: 30s
+          scheme: https
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets:
+                - ordexxa-backend.onrender.com
+              labels:
+                application: ordexxa-backend
+                environment: production
+
+        - job_name: ordexxa-api-gateway
+          scrape_interval: 30s
+          scheme: https
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets:
+                - ordexxa-api-gateway.onrender.com
+              labels:
+                application: ordexxa-api-gateway
+                environment: production
+
+processors:
+  batch:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:${PORT}"
+
+service:
+  pipelines:
+    metrics:
+      receivers:
+        - prometheus
+      processors:
+        - batch
+      exporters:
+        - prometheus
