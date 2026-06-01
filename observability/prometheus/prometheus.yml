@@ -12,11 +12,3 @@ scrape_configs:
         labels:
           project: ordexxa
           environment: production
-
-  - job_name: prometheus-self
-    static_configs:
-      - targets:
-          - localhost:9090
-        labels:
-          project: ordexxa
-          environment: production
