@@ -1,12 +1,8 @@
 FROM otel/opentelemetry-collector-contrib:0.114.0
 
-COPY config.template.yaml /etc/otelcol-contrib/config.template.yaml
-COPY start.sh /start.sh
-
-USER root
-RUN chmod +x /start.sh
-USER 10001
+COPY config.yaml /etc/otelcol-contrib/config.yaml
 
 EXPOSE 8889
 
-ENTRYPOINT ["/start.sh"]
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config=/etc/otelcol-contrib/config.yaml"]

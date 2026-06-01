@@ -29,7 +29,7 @@ processors:
 
 exporters:
   prometheus:
-    endpoint: "0.0.0.0:${PORT}"
+    endpoint: "0.0.0.0:${env:PORT}"
 
 service:
   pipelines:
